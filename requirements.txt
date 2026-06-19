@@ -1,0 +1,15 @@
+torch
+torchvision
+torchaudio
+numpy
+scipy
+pandas
+pyyaml
+tqdm
+fastapi
+uvicorn
+mlflow
+pytest
+python-multipart
+dvc
+python-dotenv
