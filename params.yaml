@@ -1,0 +1,70 @@
+data:
+  raw_path: data/raw
+  test_path: data/test_in
+
+artifacts:
+  norm_stats_path: artifacts/norm_stats.pkl
+
+months:
+  - APRIL_16
+  - JULY_16
+  - OCT_16
+  - DEC_16
+
+features:
+  met_vars:
+    - q2
+    - t2
+    - u10
+    - v10
+    - swdown
+    - pblh
+    - psfc
+    - rain
+
+  emission_vars:
+    - PM25
+    - NH3
+    - SO2
+    - NOx
+    - NMVOC_e
+    - NMVOC_finn
+    - bio
+
+  log_features:
+    - PM25
+    - NH3
+    - SO2
+    - NOx
+    - NMVOC_e
+    - NMVOC_finn
+    - bio
+    - cpm25
+
+model:
+  hidden_dim: 96
+  kernel_size: 3
+  num_layers: 3
+
+forecast:
+  history_pm: 10
+  forecast_steps: 16
+  height: 140
+  width: 124
+
+training:
+  batch_size: 2
+  accum_steps: 2
+  epochs: 1
+  lr: 0.0003
+  weight_decay: 0.0001
+  patience: 5
+  grad_clip: 1.0
+
+scheduler:
+  warmup_epochs: 3
+  min_lr: 0.00001
+
+paths:
+  model_path: models/best_model_p2.pt
+  output_path: outputs/preds.npy
