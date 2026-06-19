@@ -60,6 +60,10 @@ training:
   weight_decay: 0.0001
   patience: 5
   grad_clip: 1.0
+  use_amp: true
+  max_training_hours: 11
+  teacher_forcing_start: 0.5
+  teacher_forcing_end: 0.0
 
 scheduler:
   warmup_epochs: 3
