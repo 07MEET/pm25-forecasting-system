@@ -9,10 +9,13 @@ class PM25Dataset(Dataset):
     """
     Dataset for PM2.5 forecasting.
 
-    Each sample consists of:
-        - PM2.5 history      : (history_pm, H, W)
-        - Meteorology history: (history_pm, C, H, W)
-        - PM2.5 future       : (forecast_steps, H, W)
+    Creates sliding-window samples consisting of:
+    - PM2.5 history
+    - Meteorological history
+    - Future PM2.5 targets
+
+    Also computes sample weights based on detected pollution
+    episodes for use with WeightedRandomSampler.
     """
 
     def __init__(
@@ -32,9 +35,9 @@ class PM25Dataset(Dataset):
 
         history_pm = config["forecast"]["history_pm"]
         forecast_steps = config["forecast"]["forecast_steps"]
-
         window = history_pm + forecast_steps
 
+        # Keep feature order identical to notebook
         other_keys = [
             key
             for key in (met_vars + emission_vars)
@@ -43,7 +46,12 @@ class PM25Dataset(Dataset):
 
         for month, data in data_dict.items():
 
-            total_timesteps = data["cpm25"].shape[0]
+            if month not in episode_masks:
+                raise KeyError(
+                    f"Episode mask not found for month: {month}"
+                )
+
+            total_steps = data["cpm25"].shape[0]
 
             pm = normalize(
                 data["cpm25"],
@@ -52,7 +60,7 @@ class PM25Dataset(Dataset):
                 log_features,
             )
 
-            met_stack = np.stack(
+            mets = np.stack(
                 [
                     normalize(
                         data[key],
@@ -70,26 +78,23 @@ class PM25Dataset(Dataset):
 
             for t in range(
                 0,
-                total_timesteps - window + 1,
+                total_steps - window + 1,
                 stride,
             ):
-
                 pm_hist = pm[
                     t : t + history_pm
                 ]
 
                 pm_future = pm[
-                    t + history_pm :
-                    t + window
+                    t + history_pm : t + window
                 ]
 
-                met_hist = met_stack[
+                met_hist = mets[
                     t : t + history_pm
                 ]
 
                 ep_frac = ep_mask[
-                    t + history_pm :
-                    t + window
+                    t + history_pm : t + window
                 ].mean()
 
                 self.samples.append(
@@ -100,6 +105,7 @@ class PM25Dataset(Dataset):
                     )
                 )
 
+                # Same weighting as notebook
                 self.weights.append(
                     1.0 + 9.0 * ep_frac
                 )
@@ -113,20 +119,10 @@ class PM25Dataset(Dataset):
         return len(self.samples)
 
     def __getitem__(self, idx):
-
         pm_hist, met_hist, pm_future = self.samples[idx]
 
         return (
-            torch.tensor(
-                pm_hist,
-                dtype=torch.float32,
-            ),
-            torch.tensor(
-                met_hist,
-                dtype=torch.float32,
-            ),
-            torch.tensor(
-                pm_future,
-                dtype=torch.float32,
-            ),
+            torch.from_numpy(pm_hist).float(),
+            torch.from_numpy(met_hist).float(),
+            torch.from_numpy(pm_future).float(),
         )
