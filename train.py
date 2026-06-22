@@ -64,7 +64,7 @@ def main():
     DEVICE = torch.device(
         "cuda" if torch.cuda.is_available() else "cpu"
     )
-
+    
     USE_AMP = (
         config["training"]["use_amp"]
         and DEVICE.type == "cuda"
@@ -213,7 +213,7 @@ def main():
         train_ds,
         batch_size=config["training"]["batch_size"],
         sampler=sampler,
-        num_workers=2,
+        num_workers=0,
         pin_memory=(DEVICE.type == "cuda"),
         drop_last=True,
     )
@@ -222,7 +222,7 @@ def main():
         val_ds,
         batch_size=config["training"]["batch_size"],
         shuffle=False,
-        num_workers=2,
+        num_workers=0,
         pin_memory=(DEVICE.type == "cuda"),
     )
 
