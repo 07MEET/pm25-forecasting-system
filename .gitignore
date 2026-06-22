@@ -20,9 +20,10 @@ env/
 Thumbs.db
 
 # Large generated files
-artifacts/*.pkl
+artifacts/
 outputs/
 mlruns/
+models/
 
 # Data (keep structure, not contents)
 data/raw/
