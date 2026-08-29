@@ -1,5 +1,10 @@
 # 🌍 PM2.5 Air Pollution Forecasting System
 
+![Python](https://img.shields.io/badge/Python-3.11-blue)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.x-red)
+![CUDA](https://img.shields.io/badge/CUDA-Supported-green)
+![License](https://img.shields.io/badge/License-MIT-yellow)
+
 A deep learning-based spatiotemporal forecasting system for predicting PM2.5 air pollution concentrations using meteorological and emission data. The project implements a physics-informed ConvLSTM encoder-decoder architecture enhanced with multi-scale spatial feature extraction, wind-aware transport modeling, spatial attention, and episode-aware forecasting.
 
 Originally developed for the ANRF AISE Hack PM2.5 Forecasting Challenge, the solution has been converted from a research notebook into a modular, reproducible, and production-ready Python codebase.
@@ -59,7 +64,7 @@ The forecasting pipeline consists of:
 ## 📂 Project Structure
 
 ```text
-pm25-air-pollution-forecasting/
+pm25-forecasting-system/
 │
 ├── src/
 │   ├── data/
@@ -81,10 +86,10 @@ pm25-air-pollution-forecasting/
 │   └── test_in/
 │
 ├── models/
-│   └── best_model_p2.pt
+│   └── (generated model checkpoints)
 │
 ├── artifacts/
-│   └── norm_stats.pkl
+│   └── (generated normalization statistics)
 │
 ├── params.yaml
 ├── requirements.txt
@@ -96,13 +101,22 @@ pm25-air-pollution-forecasting/
 
 ## 🛠️ Tech Stack
 
-* Python
-* PyTorch
-* NumPy
-* SciPy
-* YAML Configuration
-* Automatic Mixed Precision (AMP)
-* CUDA GPU Acceleration
+**Programming Language**
+- Python
+
+**Deep Learning**
+- PyTorch
+
+**Scientific Computing**
+- NumPy
+- SciPy
+
+**Configuration**
+- YAML
+
+**Acceleration**
+- CUDA
+- Automatic Mixed Precision (AMP)
 
 ---
 
@@ -111,8 +125,8 @@ pm25-air-pollution-forecasting/
 ### Clone Repository
 
 ```bash
-git clone https://github.com/<your-username>/pm25-air-pollution-forecasting.git
-cd pm25-air-pollution-forecasting
+git clone https://github.com/07MEET/pm25-forecasting-system.git
+cd pm25-forecasting-system
 ```
 
 ### Create Environment
@@ -209,28 +223,26 @@ Shape:
 (218, 140, 124, 16)
 ```
 
----
+--- 
 
 ## 📈 Results
 
-* Forecast Horizon: 16 Steps
-* Input History: 10 Steps
-* Spatial Resolution: 140 × 124
-* Trainable Parameters: ~3.8 Million
-* GPU Accelerated Inference
-* Reproduces competition inference outputs exactly
+| Property | Value |
+|----------|-------|
+| Forecast Horizon | 16 Steps |
+| Input History | 10 Steps |
+| Features | 15 |
+| Spatial Resolution | 140 × 124 |
+| Trainable Parameters | ~3.8 Million |
+| Framework | PyTorch |
+| Inference | GPU Accelerated |
+
+The modular implementation reproduces the inference outputs of the original competition notebook while providing a clean, reusable, and production-oriented codebase.
 
 ---
 
-## 📌 Current Status
+## 🚀 Future Enhancements
 
-* ✅ Notebook implementation completed
-* ✅ Production codebase completed
-* ✅ Training pipeline implemented
-* ✅ Inference pipeline implemented
-* ✅ Configuration-driven workflow
-* ✅ GPU support with AMP
-* ✅ Checkpointing and reproducibility
 * 🔄 FastAPI deployment (future enhancement)
 * 🔄 Dockerization (future enhancement)
 * 🔄 Experiment tracking (future enhancement)

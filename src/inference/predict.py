@@ -1,5 +1,11 @@
 import gc
+import sys
 from pathlib import Path
+
+# Ensure project root is in sys.path so the script can run from any working directory
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 import numpy as np
 import torch
@@ -7,11 +13,16 @@ from torch.amp import autocast
 from tqdm import tqdm
 
 from src.models.phase2model import Phase2Model
+
 from src.data.loader import (
     load_config,
     load_norm_stats,
+    compute_norm_stats,
+    save_norm_stats,
+    load_all_months,
     normalize,
     denormalize_pm25,
+    PROJECT_ROOT,
 )
 
 def main():
@@ -30,9 +41,19 @@ def main():
         and DEVICE.type == "cuda"
     )
 
-    norm_stats = load_norm_stats(
-        config["artifacts"]["norm_stats_path"]
-    )
+    norm_stats_file = Path(config["artifacts"]["norm_stats_path"])
+    if not norm_stats_file.is_absolute():
+        norm_stats_file = PROJECT_ROOT / norm_stats_file
+
+    if not norm_stats_file.exists():
+        print("⚡ Normalization stats not found. Computing from raw training data...")
+        all_data = load_all_months(config)
+        norm_stats = compute_norm_stats(config=config, all_data=all_data)
+        save_norm_stats(norm_stats=norm_stats, save_path=norm_stats_file)
+        print("✅ Computed and saved normalization statistics.")
+    else:
+        norm_stats = load_norm_stats(norm_stats_file)
+
 
     # ------------------------------------------------------------------
     # Feature ordering (must match training)

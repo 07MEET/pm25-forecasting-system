@@ -28,6 +28,7 @@ models/
 # Data (keep structure, not contents)
 data/raw/
 data/test_in/
+data/stats/
 
 # Bytecode
 *.egg-info/

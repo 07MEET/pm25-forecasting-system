@@ -13,3 +13,5 @@ pytest
 python-multipart
 dvc
 python-dotenv
+streamlit
+plotly
