@@ -34,3 +34,6 @@ data/stats/
 *.egg-info/
 build/
 dist/
+
+# Scratch / temp files
+scratch/
